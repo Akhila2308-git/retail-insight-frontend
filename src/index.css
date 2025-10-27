@@ -1,0 +1,13 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #fafafa;
+}
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #0056b3;
+}
