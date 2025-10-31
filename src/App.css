@@ -1,38 +1,77 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+/* ---------- Global Dashboard Styles ---------- */
+.dashboard {
+  padding: 20px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f8f9fa;
   min-height: 100vh;
+}
+
+/* ---------- Heading ---------- */
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+/* ---------- Chart Container ---------- */
+.charts {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  gap: 30px;
 }
 
-.App-link {
-  color: #61dafb;
+/* ---------- Each Chart Box ---------- */
+.chart-box {
+  width: 90%;
+  max-width: 800px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.chart-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* ---------- Chart Title ---------- */
+.chart-box h3 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #444;
+}
+
+/* ---------- Loading & Error States ---------- */
+.loading,
+.error {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 50px;
+}
+
+.loading {
+  color: #555;
+}
+
+.error {
+  color: red;
+}
+
+/* ---------- Responsive Design ---------- */
+@media (max-width: 768px) {
+  .chart-box {
+    width: 95%;
+    padding: 15px;
   }
-  to {
-    transform: rotate(360deg);
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .chart-box h3 {
+    font-size: 1.2rem;
   }
 }

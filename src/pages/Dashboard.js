@@ -1,55 +1,94 @@
-import React, { useState, useEffect } from 'react';
-import api from '../services/api';
-import FiltersBar from '../components/FiltersBar';
-import TopProductsChart from '../components/TopProductsChart';
-import RevenueTrendChart from '../components/RevenueTrendChart';
-import LowStockTable from '../components/LowStockTable';
+import React, { useEffect, useState } from "react";
+import API from "../api"; // ✅ make sure path is correct
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  LineChart,
+  Line,
+} from "recharts";
 
-export default function Dashboard() {
-  const [start, setStart] = useState(new Date(new Date().setDate(new Date().getDate()-30)));
-  const [end, setEnd] = useState(new Date());
-  const [category, setCategory] = useState('');
-  const [categories, setCategories] = useState([]);
-  const [topProducts, setTopProducts] = useState([]);
-  const [revenue, setRevenue] = useState([]);
-  const [lowStock, setLowStock] = useState([]);
-
-  const fetchAll = async () => {
-    const qs = new URLSearchParams({
-      start: start.toISOString(),
-      end: end.toISOString(),
-      category
-    }).toString();
-
-    try {
-      const [topRes, revRes, lowRes, catsRes] = await Promise.all([
-        api.get(`/api/dashboard/top-products?${qs}`),
-        api.get(`/api/dashboard/revenue-trends?interval=day&${qs}`),
-        api.get(`/api/dashboard/low-stock?threshold=10&${qs}`),
-        api.get('/api/dashboard/categories') // optional
-      ]);
-      setTopProducts(topRes.data);
-      setRevenue(revRes.data);
-      setLowStock(lowRes.data);
-      setCategories(catsRes.data || []);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+function Dashboard() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchAll();
-  }, [start, end, category]);
+    const fetchProducts = async () => {
+      try {
+        const res = await API.get("/products"); // ✅ correct endpoint
+        setProducts(res.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  if (loading) return <p>Loading product data...</p>;
+  if (!products.length) return <p>No products found...</p>;
+
+  const totalRevenue = products.reduce((sum, p) => sum + p.price * p.sold, 0);
+  const totalItemsSold = products.reduce((sum, p) => sum + p.sold, 0);
+  const inventoryValue = products.reduce((sum, p) => sum + p.price * p.stock, 0);
+
+  const topProducts = [...products]
+    .sort((a, b) => b.sold - a.sold)
+    .slice(0, 5);
 
   return (
-    <div style={{ padding: 24 }}>
-      <h2>Manager Dashboard</h2>
-      <FiltersBar {...{ start, end, setStart, setEnd, category, setCategory, categories }} />
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-        <TopProductsChart data={topProducts} />
-        <RevenueTrendChart data={revenue} />
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">📊 Dashboard Insights</h2>
+
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="bg-blue-100 p-4 rounded-2xl shadow text-center">
+          <h3 className="text-lg font-semibold">Total Revenue</h3>
+          <p className="text-2xl font-bold">₹{totalRevenue}</p>
+        </div>
+
+        <div className="bg-pink-100 p-4 rounded-2xl shadow text-center">
+          <h3 className="text-lg font-semibold">Total Items Sold</h3>
+          <p className="text-2xl font-bold">{totalItemsSold}</p>
+        </div>
+
+        <div className="bg-green-100 p-4 rounded-2xl shadow text-center">
+          <h3 className="text-lg font-semibold">Inventory Value</h3>
+          <p className="text-2xl font-bold">₹{inventoryValue}</p>
+        </div>
       </div>
-      <LowStockTable items={lowStock} />
+
+      {/* Top 5 Products by Sales */}
+      <h3 className="text-xl font-bold mb-2">Top 5 Products by Sales</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={topProducts}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="sold" fill="#2563eb" />
+        </BarChart>
+      </ResponsiveContainer>
+
+      {/* Revenue Trends */}
+      <h3 className="text-xl font-bold mt-8 mb-2">Revenue Trends</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={topProducts}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Line type="monotone" dataKey="price" stroke="#22c55e" />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 }
+
+export default Dashboard;
+
+

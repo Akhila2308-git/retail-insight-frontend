@@ -1,0 +1,61 @@
+.dashboard {
+  text-align: center;
+  padding: 30px;
+  background-color: #f8f9fb;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+}
+
+.dashboard h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #1f2937;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+  justify-items: center;
+}
+
+.product-card {
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  width: 230px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+.product-card h3 {
+  color: #374151;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.product-card p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+.product-card p:nth-child(3) {
+  color: #047857; /* green for stock */
+}
+
+.product-card p:nth-child(4) {
+  color: #1d4ed8; /* blue for sold */
+}
+
+.product-card p:nth-child(5) {
+  color: #b91c1c; /* red for reorder */
+}
+
+
